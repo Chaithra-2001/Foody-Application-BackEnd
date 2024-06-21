@@ -7,18 +7,20 @@ import java.util.Objects;
 public class Dishes {
     @MongoId
     private String dishID;
-    private String name;
+    private String dishname;
+    private String imageUrl;
     private String category;
     private float Price;
     private int rating;
     public Dishes() {
     }
 
-    public Dishes(String dishID, String name, String category, float price, int rating) {
+    public Dishes(String dishID, String dishname, String imageUrl, String category, float price, int rating) {
         this.dishID = dishID;
-        this.name = name;
+        this.dishname = dishname;
+        this.imageUrl = imageUrl;
         this.category = category;
-        Price = price;
+        this.Price = price;
         this.rating = rating;
     }
 
@@ -30,12 +32,12 @@ public class Dishes {
         this.dishID = dishID;
     }
 
-    public String getName() {
-        return name;
+    public String getDishname() {
+        return dishname;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setDishname(String dishname) {
+        this.dishname = dishname;
     }
 
     public String getCategory() {
@@ -61,29 +63,40 @@ public class Dishes {
     public void setRating(int rating) {
         this.rating = rating;
     }
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Dishes dish = (Dishes) o;
+        return Objects.equals(dishname, dish.dishname)  && Objects.equals(category, dish.category) && Objects.equals(imageUrl, dish.imageUrl) && Objects.equals(Price, dish.Price) && Objects.equals(rating, dish.rating);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(dishname, Price, category, imageUrl, rating);
+    }
+
 
     @Override
     public String toString() {
         return "dishes{" +
                 "dishID='" + dishID + '\'' +
-                ", name='" + name + '\'' +
+                ", name='" + dishname + '\'' +
                 ", category='" + category + '\'' +
                 ", Price=" + Price +
                 ", rating=" + rating +
                 '}';
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Dishes dishes = (Dishes) o;
-        return Objects.equals(dishID, dishes.dishID);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(dishID);
-    }
+
+
 }
 

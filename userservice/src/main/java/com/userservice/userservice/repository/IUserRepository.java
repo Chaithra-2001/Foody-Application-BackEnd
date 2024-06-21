@@ -15,7 +15,7 @@ public interface IUserRepository extends MongoRepository<User,String> {
     @Query("{'emailId': ?0}")
     List<Restaurant> findFavoriteRestaurantsByEmailId(String emailId);
 
-//    Optional<User> findByUserId(String userId);
+
 Optional<User> findByEmailId(String emailId);
 
     @Query("{'emailId': ?0}")

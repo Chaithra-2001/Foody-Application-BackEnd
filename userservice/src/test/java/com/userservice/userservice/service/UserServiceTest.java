@@ -77,7 +77,7 @@ class UserServiceTest {
     void testAddFavoriteDish_Success() {
         String userId = "test@example.com";
         Dishes dish = new Dishes();
-        dish.setName("Dish A");
+        dish.setDishname("Dish A");
 
         User user = new User();
         user.setEmailID(userId);
@@ -94,7 +94,7 @@ class UserServiceTest {
     void testAddFavoriteDish_UserNotFound() {
         String userId = "nonexistent@example.com";
         Dishes dish = new Dishes();
-        dish.setName("Dish A");
+        dish.setDishname("Dish A");
 
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 

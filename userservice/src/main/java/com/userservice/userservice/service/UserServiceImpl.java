@@ -2,6 +2,7 @@ package com.userservice.userservice.service;
 
 import com.userservice.userservice.exception.*;
 import com.userservice.userservice.model.Dishes;
+import com.userservice.userservice.model.Order;
 import com.userservice.userservice.model.Restaurant;
 import com.userservice.userservice.model.User;
 import com.userservice.userservice.proxy.UserProxy;
@@ -108,6 +109,34 @@ public User addRestaurantToFavorites(String userId, Restaurant restaurant) throw
         }
     }
 
+//    @Override
+//    public User addDishToFavorites(String userId, Dishes dish) throws UserNotFoundException, DishAlreadyExistsException {
+//        Optional<User> optionalUser = iUserRepository.findById(userId);
+//        if (optionalUser.isPresent()) {
+//            User user = optionalUser.get();
+//            List<Dishes> dishList = user.getFavoriteDish();
+//
+//            if (dishList == null) {
+//                dishList = new ArrayList<>();
+//            }
+//
+//            // Check if dish with the same ID already exists in user's favorite dishes
+//            boolean exists = dishList.contains(dish);
+//
+//            if (exists) {
+//                throw new DishAlreadyExistsException("Dish already present");
+//            } else {
+//                dishList.add(dish);
+//                user.setFavoriteDish(dishList);
+//                iUserRepository.save(user);
+//                return user;
+//            }
+//        } else {
+//            throw new UserNotFoundException("User does not exist");
+//        }
+//    }
+
+
     @Override
     public User addDishToFavorites(String userId, Dishes dish) throws UserNotFoundException, DishAlreadyExistsException {
         Optional<User> optionalUser = iUserRepository.findById(userId);
@@ -175,6 +204,7 @@ public User addRestaurantToFavorites(String userId, Restaurant restaurant) throw
             throw new FavoriteException("User not found");
         }
     }
+
     @Override
     public boolean deleteDishFromFavorites(String userId, String dishId) throws FavoriteException {
         Optional<User> userOptional = iUserRepository.findById(userId);
@@ -237,6 +267,67 @@ public User addRestaurantToFavorites(String userId, Restaurant restaurant) throw
         } else {
             throw new UserNotFoundException("user not found");
         }
+    }
+    @Override
+    public User addOrder(List<Dishes> dishes, String userId, String date, double price) throws UserNotFoundException, OrderAlreadyExistsException {
+        Optional<User> optionalUser = iUserRepository.findById(userId);
+        if (optionalUser.isPresent()) {
+            User loggedInUser = optionalUser.get();
+            List<Order> orderList = loggedInUser.getOrderList();
+            if (orderList == null) {
+                Order orderObj = new Order();
+                orderObj.generateOrderId();
+                String orderId = orderObj.getOrderId();
+                Order order = new Order(orderId, date, dishes, price);
+                loggedInUser.setOrderList(Collections.singletonList(order));
+                iUserRepository.save(loggedInUser);
+                return loggedInUser;
+            } else {
+                Order orderObj = new Order();
+                orderObj.generateOrderId();
+                String orderId = orderObj.getOrderId();
+                Order order = new Order(orderId, date, dishes, price);
+                orderList.add(order);
+                loggedInUser.setOrderList(orderList);
+                iUserRepository.save(loggedInUser);
+                return loggedInUser;
+            }
+        }
+        throw new UserNotFoundException("User Not found");
+    }
+
+
+
+
+    @Override
+    public List<Order> getAllOrders(String userId) throws UserNotFoundException, OrderNotFoundException {
+        if (iUserRepository.findById(userId).isPresent()) {
+            User user = iUserRepository.findById(userId).get();
+            List<Order> orders = user.getOrderList();
+            if (orders.isEmpty()) {
+                throw new OrderNotFoundException("There is no order present");
+            }
+            return orders;
+        } else throw new UserNotFoundException("User Not found");
+    }
+
+
+    @Override
+    public boolean deleteOrder(String orderId, String userId) throws UserNotFoundException, OrderNotFoundException {
+        if (iUserRepository.findById(userId).isPresent()) {
+            User user = iUserRepository.findById(userId).get();
+            List<Order> orderList = user.getOrderList();
+            Optional<Order> requestedOrder = orderList.stream().filter(f -> f.getOrderId().equals(orderId)).findFirst();
+            if (requestedOrder.isPresent()) {
+                orderList.remove(requestedOrder.get()); // Use requestedOrder.get() to obtain the Order object
+                user.setOrderList(orderList);
+                iUserRepository.save(user);
+                return true;
+            } else {
+                throw new OrderNotFoundException("The requested order is not found");
+            }
+        }
+        throw new UserNotFoundException("User not found");
     }
 
     @Override

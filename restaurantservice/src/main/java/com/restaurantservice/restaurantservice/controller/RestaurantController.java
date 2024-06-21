@@ -20,7 +20,7 @@ import java.util.List;
 
 public class RestaurantController {
     private final IRestaurantService iRestaurantService;
-
+    private ResponseEntity<?> responseEntity;
     @Autowired
     public RestaurantController(IRestaurantService iRestaurantService) {
         this.iRestaurantService = iRestaurantService;
@@ -223,6 +223,37 @@ public class RestaurantController {
         return new ResponseEntity<>(dishes, HttpStatus.OK);
     }
 
+    @GetMapping("/allMerchants")
+    public ResponseEntity<?> getAllMerchants() throws MerchantNotFoundException {
+        try {
+            responseEntity = new ResponseEntity<>(iRestaurantService.getAllMerchants(), HttpStatus.OK);
+        } catch (MerchantNotFoundException exception) {
+            throw new MerchantNotFoundException("merchant Not Found");
+        }
+        return responseEntity;
+    }
+
+    @PutMapping("/setStatus/{merchantId}")
+    public ResponseEntity<?> updateStatus(@PathVariable String merchantId, @RequestBody Restaurant restaurant) throws MerchantNotFoundException, RestaurantNotFoundException {
+
+        try {
+            responseEntity = new ResponseEntity<>(iRestaurantService.updateStatus(merchantId, restaurant), HttpStatus.OK);
+        } catch (MerchantNotFoundException exception) {
+            return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
+        }
+        return responseEntity;
+    }
+
+    @GetMapping("/restaurant/getuserdetails")
+    public ResponseEntity<?> getuser(   HttpServletRequest request) {
+        try {
+            String userId = request.getAttribute("emailId").toString();
+            Merchant user = iRestaurantService.getUser(userId);
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        } catch (MerchantNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
 
 

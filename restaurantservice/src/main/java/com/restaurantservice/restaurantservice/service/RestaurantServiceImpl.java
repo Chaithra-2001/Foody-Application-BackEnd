@@ -9,7 +9,6 @@ import com.restaurantservice.restaurantservice.model.Restaurant;
 import com.restaurantservice.restaurantservice.proxy.UserProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.*;
 
 
@@ -42,35 +41,7 @@ import java.util.*;
         }
     }
 
-//    @Override
-//    public Merchant addRestaurant(Restaurant restaurant, String emailId) throws MerchantNotFoundException, RestaurantAlreadyExistException {
-//        Optional<Merchant> merchantOptional = iMerchantRepository.findByEmailId(emailId);
-//        if (merchantOptional.isPresent()) {
-//            Merchant merchant = merchantOptional.get();
-//            List<Restaurant> restaurantList = merchant.getRestaurantList();
-//            if (restaurantList == null) {
-//                merchant.setRestaurantList(Arrays.asList(restaurant));
-//            } else {
-//                boolean flag = false;
-//                for (Restaurant existingRestaurant : restaurantList) {
-//                    if (existingRestaurant.getName() != null && existingRestaurant.getName().equals(restaurant.getName())) {
-//
-//                        flag = true;
-//                        break;
-//                    }
-//                }
-//                if (flag) {
-//                    throw new RestaurantAlreadyExistException("Restaurant already exists");
-//                } else {
-//                    restaurantList.add(restaurant);
-//                    merchant.setRestaurantList(restaurantList);
-//                }
-//            }
-//            iMerchantRepository.save(merchant);
-//            return merchant;
-//        }
-//        throw new MerchantNotFoundException("Merchant not found");
-//    }
+
 @Override
 public Merchant addRestaurant(Restaurant restaurant, String emailId) throws MerchantNotFoundException, RestaurantAlreadyExistException {
     Optional<Merchant> merchantOptional = iMerchantRepository.findByEmailId(emailId);
@@ -202,85 +173,6 @@ public Merchant addRestaurant(Restaurant restaurant, String emailId) throws Merc
         }
     }
 
-
-//    @Override
-//    public Merchant addDish(String emailId, String restId, Dishes dish)
-//            throws MerchantNotFoundException, RestaurantNotFoundException, DishAlreadyExistException {
-//        Optional<Merchant> merchantOptional = iMerchantRepository.findByEmailId(emailId);
-//        if (merchantOptional.isPresent()) {
-//            Merchant merchant = merchantOptional.get();
-//            List<Restaurant> restaurantList = merchant.getRestaurantList();
-//            boolean restaurantFound = false;
-//
-//            for (Restaurant existingRestaurant : restaurantList) {
-//                if (existingRestaurant.getRestId().equals(restId)) {
-//                    restaurantFound = true;
-//                    List<Dishes> dishesList = existingRestaurant.getDishList();
-//                    if (dishesList == null) {
-//                        existingRestaurant.setDishList(new ArrayList<>(List.of(dish)));
-//                    } else {
-//                        boolean dishFound = dishesList.stream().anyMatch(d -> d.getDishID().equals(dish.getDishID()));
-//                        if (dishFound) {
-//                            throw new DishAlreadyExistException("Dish already exists in the restaurant");
-//                        } else {
-//                            dishesList.add(dish);
-//                            existingRestaurant.setDishList(dishesList);
-//                        }
-//                    }
-//                    break;
-//                }
-//            }
-//
-//            if (restaurantFound) {
-//                merchant.setRestaurantList(restaurantList);
-//                return iMerchantRepository.save(merchant);
-//            } else {
-//                throw new RestaurantNotFoundException("Restaurant not found in the merchants list");
-//            }
-//        } else {
-//            throw new MerchantNotFoundException("Merchant not found");
-//        }
-//
-//
-//    }
-//@Override
-//public Merchant addDish(String emailId, String restId, Dishes dish)
-//        throws MerchantNotFoundException, RestaurantNotFoundException, DishAlreadyExistException {
-//    Optional<Merchant> merchantOptional = iMerchantRepository.findByEmailId(emailId);
-//    if (merchantOptional.isPresent()) {
-//        Merchant merchant = merchantOptional.get();
-//        List<Restaurant> restaurantList = merchant.getRestaurantList();
-//        boolean restaurantFound = false;
-//
-//        for (Restaurant existingRestaurant : restaurantList) {
-//            if (existingRestaurant.getRestId().equals(restId)) {
-//                restaurantFound = true;
-//                List<Dishes> dishesList = existingRestaurant.getDishList();
-//                if (dishesList == null) {
-//                    existingRestaurant.setDishList(new ArrayList<>(List.of(dish)));
-//                } else {
-//                    boolean dishFound = dishesList.stream().anyMatch(d -> d.getDishID().equals(dish.getDishID()));
-//                    if (dishFound) {
-//                        throw new DishAlreadyExistException("Dish already exists in the restaurant");
-//                    } else {
-//                        dishesList.add(dish);
-//                        existingRestaurant.setDishList(dishesList);
-//                    }
-//                }
-//                break;
-//            }
-//        }
-//
-//        if (restaurantFound) {
-//            merchant.setRestaurantList(restaurantList);
-//            return iMerchantRepository.save(merchant);
-//        } else {
-//            throw new RestaurantNotFoundException("Restaurant not found in the merchant's list");
-//        }
-//    } else {
-//        throw new MerchantNotFoundException("Merchant not found");
-//    }
-//}
 @Override
 public Merchant addDish(String emailId, String restId, Dishes dish)
         throws MerchantNotFoundException, RestaurantNotFoundException, DishAlreadyExistException {
@@ -422,8 +314,10 @@ public Merchant addDish(String emailId, String restId, Dishes dish)
                     if (restaurant.getRestId().equals(restId)) {
                         String name = restaurant.getName();
                         String location = restaurant.getLocation();
+                        String image=restaurant.getImageUrl();
+                        boolean status=restaurant.getStatus();
                         List<Dishes> dishList = restaurant.getDishList();
-                        return new Restaurant(restId, name, location, dishList);
+                        return new Restaurant(restId, name, location,image, dishList,status);
                     }
                 }
             }
@@ -541,9 +435,50 @@ public Merchant addDish(String emailId, String restId, Dishes dish)
 //    }
 //
 
+    @Override
+    public Restaurant updateStatus(String merchantId, Restaurant restaurant) throws RestaurantNotFoundException, MerchantNotFoundException {
+        if (iMerchantRepository.findById(merchantId).isPresent()) {
+            Merchant merchant = iMerchantRepository.findById(merchantId).get();
+            List<Restaurant> restaurantList = merchant.getRestaurantList();
+            Optional<Restaurant> restaurant1 = restaurantList.stream().filter(f -> f.getName().equals(restaurant.getName())).findAny();
+            if (restaurant1.isPresent()) {
+                if (restaurant.getStatus() == false) {
+                    restaurant1.get().setStatus(true);
+                } else {
+                    restaurant1.get().setStatus(false);
+                }
 
+                merchant.setRestaurantList(restaurantList);
+                iMerchantRepository.save(merchant);
+            }
+            throw new RestaurantNotFoundException("Restaurant not found ");
 
+        }
+        throw new MerchantNotFoundException("Merchant not found");
+    }
 
+    @Override
+    public List<Merchant> getAllMerchants() throws MerchantNotFoundException {
+
+        List<Merchant> mar = iMerchantRepository.findAll();
+
+        if (iMerchantRepository.findAll().isEmpty()) {
+            throw new MerchantNotFoundException("merchant not found");
+        }
+        return iMerchantRepository.findAll();
+    }
+
+    @Override
+    public Merchant getUser(String userid) throws MerchantNotFoundException {
+        Optional<Merchant> userOptional=iMerchantRepository.findById(userid);
+        if(userOptional.isPresent()){
+            Merchant data= iMerchantRepository.findById(userid).get();
+            return data;
+        }
+        else{
+            throw new MerchantNotFoundException("merchant not found");
+        }
+    }
 
 
 

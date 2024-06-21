@@ -2,6 +2,7 @@ package com.userservice.userservice.controller;
 
 import com.userservice.userservice.exception.*;
 import com.userservice.userservice.model.Dishes;
+import com.userservice.userservice.model.Order;
 import com.userservice.userservice.model.Restaurant;
 import com.userservice.userservice.model.User;
 import com.userservice.userservice.service.IUserService;
@@ -34,6 +35,40 @@ public class UserController {
         }
     }
 
+    @PostMapping("/user/addOrder/{date}/{price}")
+    public ResponseEntity<?> addOrder(@RequestBody List<Dishes> dishes, HttpServletRequest httpServletRequest, @PathVariable String date, @PathVariable double price) {
+        String emailId = httpServletRequest.getAttribute("emailId").toString();
+        try {
+            User user = iUserService.addOrder(dishes, emailId, date, price);
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        } catch (UserNotFoundException | OrderAlreadyExistsException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+        }
+    }
+
+    @GetMapping("/user/getAllOrders")
+    public ResponseEntity<?> getAllOrders(HttpServletRequest httpServletRequest) {
+        String emailId = httpServletRequest.getAttribute("emailId").toString();
+        try {
+            List<Order> orders = iUserService.getAllOrders(emailId);
+            return new ResponseEntity<>(orders, HttpStatus.OK);
+
+        } catch (UserNotFoundException | OrderNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+
+    }
+
+    @DeleteMapping("/user/deleteOrder/{orderId}")
+    public ResponseEntity<?> deleteOrder(@PathVariable String orderId, HttpServletRequest request) {
+        String emailId = request.getAttribute("emailId").toString();
+        try {
+            boolean deleted = iUserService.deleteOrder(orderId, emailId);
+            return new ResponseEntity<>(deleted, HttpStatus.OK);
+        } catch (UserNotFoundException | OrderNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
 
 
 

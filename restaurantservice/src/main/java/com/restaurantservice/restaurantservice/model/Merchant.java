@@ -18,7 +18,9 @@ public class Merchant {
     private String password;
     private String role;
     private String merchantName;
+
     private String location;
+
     private String phoneNumber;
     private List<Restaurant>  restaurantList;
 

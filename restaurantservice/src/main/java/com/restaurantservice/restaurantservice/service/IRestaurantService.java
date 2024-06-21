@@ -9,60 +9,10 @@ import java.util.List;
 
 public interface IRestaurantService {
     public Merchant registerMerchant(Merchant merchant) throws MerchantAlreadyExistsException;
-//   public Restaurant addRestaurant(Restaurant restaurant) throws RestaurantAlreadyExistException;
-////public Restaurant addRestaurant(String merchantEmailId, Restaurant restaurant) throws RestaurantAlreadyExistException, UserAlreadyExistsException ;
-//    Restaurant saveDishesToRestaurant(Dishes dishes,String restId) throws RestaurantNotFoundException, DishAlreadyExistException;
-//    boolean deleteRestaurant(String restId) throws RestaurantNotFoundException;
-//    Restaurant deleteDishFromRestaurant(String userEmailId, String dishID) throws DishNotFoundException, RestaurantNotFoundException;
-//    Restaurant updateRestaurant(String restId,Restaurant restaurant) throws RestaurantNotFoundException;
-//
-//     public Dishes updateDish(Dishes dish, String restId, String dishId) throws RestaurantNotFoundException, DishNotFoundException;
-//   List<Restaurant> getAllRestaurants()throws RestaurantNotFoundException;
-//
-//List<Restaurant> getAllResataurantByEmailId(String emailId);
-//
-//
-//    public List<Restaurant> getRestaurantsByEmailId(String emailId) throws MerchantNotFoundException, RestaurantNotFoundException ;
-//   Restaurant getRestaurantByName(String name)throws RestaurantNotFoundException;
-//    public Restaurant getoneRestrauntById(String restId) throws RestaurantNotFoundException;
-////    Dishes getDishByDishId(String restId,String dishId)throws DishNotFoundException;
-////    public Dishes getDishByRestIdAndDishId(String restId, String dishId) throws DishNotFoundException;
-//       Dishes getDishByRestIdAndDishId(String restId,String dishId)throws DishNotFoundException,RestaurantNotFoundException;
 
-
+    Merchant getUser(String userid) throws MerchantNotFoundException;
 
     public Merchant addRestaurant(Restaurant restaurant, String emailId) throws MerchantNotFoundException, RestaurantAlreadyExistException;
-
-    //    @Override
-//    public Merchant addRestaurant(Restaurant restaurant, String emailId) throws MerchantNotFoundException, RestaurantAlreadyExistException {
-//        Optional<Merchant> merchantOptional = iMerchantRepository.findByEmailId(emailId);
-//        if (merchantOptional.isPresent()) {
-//            Merchant merchant = merchantOptional.get();
-//            List<Restaurant> restaurantList = merchant.getRestaurantList();
-//            if (restaurantList == null) {
-//                merchant.setRestaurantList(Arrays.asList(restaurant));
-//            } else {
-//                boolean flag = false;
-//                for (Restaurant existingRestaurant : restaurantList) {
-//                    if (existingRestaurant.getName() != null && existingRestaurant.getName().equals(restaurant.getName())) {
-//
-//                        flag = true;
-//                        break;
-//                    }
-//                }
-//                if (flag) {
-//                    throw new RestaurantAlreadyExistException("Restaurant already exists");
-//                } else {
-//                    restaurantList.add(restaurant);
-//                    merchant.setRestaurantList(restaurantList);
-//                }
-//            }
-//            iMerchantRepository.save(merchant);
-//            return merchant;
-//        }
-//        throw new MerchantNotFoundException("Merchant not found");
-//    }
-//
 
     public List<Restaurant> getAllResaturantByEmailId(String emailId) throws RestaurantNotFoundException, MerchantNotFoundException;
 
@@ -91,6 +41,8 @@ public interface IRestaurantService {
 
     public List<Dishes> findDishesByCategory(String category);
 
+    Restaurant updateStatus(String merchantId, Restaurant restaurant) throws RestaurantNotFoundException, MerchantNotFoundException;
 
+    List<Merchant> getAllMerchants() throws MerchantNotFoundException;
 
 }

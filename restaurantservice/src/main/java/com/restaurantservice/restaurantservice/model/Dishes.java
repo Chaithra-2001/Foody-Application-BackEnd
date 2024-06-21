@@ -9,18 +9,39 @@ public class Dishes {
     private String dishID;
     private String dishname;
     private String category;
+    private  String imageUrl;
     private int price;
     private int rating;
 
     public Dishes() {
     }
 
-    public Dishes(String dishID, String dishname, String category, int price, int rating) {
+    public Dishes(String dishID, String dishname, String category, String imageUrl, int price, int rating) {
         this.dishID = dishID;
         this.dishname = dishname;
         this.category = category;
+        this.imageUrl = imageUrl;
         this.price = price;
         this.rating = rating;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Dishes dish = (Dishes) o;
+        return price == dish.price && Objects.equals(dishname, dish.dishname)  && Objects.equals(category, dish.category) && Objects.equals(imageUrl, dish.imageUrl) && Objects.equals(price, dish.price) && Objects.equals(rating, dish.rating);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(dishname, price, category, imageUrl, rating);
+    }
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public String getDishID() {

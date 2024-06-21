@@ -17,15 +17,24 @@ public class User {
     private String role;
     private String location;
     private String phoneNumber;
+    List<Order> orderList;
     List<Restaurant> favoriteRestaurant;
     List<Dishes> favoriteDish;
 
     public User() {
     }
 
-
-
-
+    public User(String emailId, String password, String userName,  String location, String phoneNumber, List<Order> orderList, List<Restaurant> favoriteRestaurant, List<Dishes> favoriteDish) {
+        this.emailId = emailId;
+        this.password = password;
+        this.userName = userName;
+        this.role = "User";
+        this.location = location;
+        this.phoneNumber = phoneNumber;
+        this.orderList = orderList;
+        this.favoriteRestaurant = favoriteRestaurant;
+        this.favoriteDish = favoriteDish;
+    }
 
     public String getEmailId() {
         return emailId;
@@ -83,6 +92,18 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
+    public void setEmailId(String emailId) {
+        this.emailId = emailId;
+    }
+
+    public List<Order> getOrderList() {
+        return orderList;
+    }
+
+    public void setOrderList(List<Order> orderList) {
+        this.orderList = orderList;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -98,16 +119,7 @@ public class User {
                 '}';
     }
 
-    public User(String emailId, String password, String userName, String location, String phoneNumber, List<Restaurant> favoriteRestaurant, List<Dishes> favoriteDish) {
-        this.emailId = emailId;
-        this.password = password;
-        this.userName = userName;
-        this.location = location;
-        this.phoneNumber = phoneNumber;
-        this.favoriteRestaurant = favoriteRestaurant;
-        this.favoriteDish = favoriteDish;
-        this.role="User";
-    }
+
 
 
     public String getRole() {

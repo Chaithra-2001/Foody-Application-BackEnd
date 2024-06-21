@@ -2,6 +2,7 @@ package com.userservice.userservice.service;
 
 import com.userservice.userservice.exception.*;
 import com.userservice.userservice.model.Dishes;
+import com.userservice.userservice.model.Order;
 import com.userservice.userservice.model.Restaurant;
 import com.userservice.userservice.model.User;
 
@@ -11,7 +12,11 @@ public interface IUserService {
 
     public User addUser(User user) throws UserAlreadyExistsException, FavoriteException;
 
+    User addOrder(List<Dishes> dishes, String userId, String date, double price) throws UserNotFoundException, OrderAlreadyExistsException;
 
+    List<Order> getAllOrders(String userId) throws UserNotFoundException, OrderNotFoundException;
+
+    boolean deleteOrder(String orderId, String userId) throws UserNotFoundException, OrderNotFoundException;
 
 
     public List<Restaurant> getFavoriteRestaurants(String userId) throws FavoriteException;
